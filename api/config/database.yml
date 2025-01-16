@@ -3,8 +3,9 @@ default: &default
   encoding: utf8mb4
   pool: <%= ENV.fetch('RAILS_MAX_THREADS') { 5 } * ENV.fetch('RAILS_MAX_ASYNC_QUERIES') { 5 } %>
   username: root
-  password:
+  password: <%= ENV['MYSQL_PASSWORD'] %>
   port: 3306
+  socket: /var/run/mysqld/mysqld.sock
 
 development:
   primary:

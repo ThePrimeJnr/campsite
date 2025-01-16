@@ -258,7 +258,8 @@ const sentryWebpackPluginOptions = {
   widenClientFileUpload: true,
   hideSourceMaps: true,
   debug: false,
-  tunnelRoute: '/monitoring-tunnel'
+  tunnelRoute: '/monitoring-tunnel',
+  telemetry: false
 }
 
 // Make sure adding Sentry options is the last code to run before exporting, to

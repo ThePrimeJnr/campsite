@@ -97,4 +97,5 @@ dump.rdb
 
 # PostHog migrations and backups
 posthog_migration
+/api/vendor/bundle/
 posthog_migration_batches
