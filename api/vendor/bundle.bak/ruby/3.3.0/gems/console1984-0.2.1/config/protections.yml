@@ -1,0 +1,33 @@
+validations:
+  forbidden_reopening:
+    - ActiveRecord
+    - ApplicationRecord
+    - Console1984
+    - PG
+    - Mysql2
+    - IRB
+    - Parser
+  forbidden_constant_reference:
+    always:
+      - Console1984
+      - IRB
+    protected:
+      - PG
+      - Mysql2
+      - ActiveRecord::Encryption
+  suspicious_terms:
+    - console_1984
+    - Console1984
+    - secret
+    - credentials
+    - irb
+forbidden_methods:
+  Kernel:
+    - eval
+  Object:
+    - eval
+  BasicObject:
+    - eval
+    - instance_eval
+  Module:
+    - class_eval

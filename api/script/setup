@@ -7,7 +7,7 @@ if [ "$1" = "--pristine" ]; then
 fi
 
 echo "\nInstalling bundler and gems...\n============================================================"
-bundle install --local
+bundle install --local --with development
 echo "\033[1;32mGem files installed.\033[0m"
 
 echo "\nInstalling javascript dependencies...\n============================================================"

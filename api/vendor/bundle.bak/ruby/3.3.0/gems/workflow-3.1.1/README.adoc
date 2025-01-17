@@ -1,0 +1,588 @@
+:doctype: book
+:toc: macro
+:toclevels: 1
+:sectlinks:
+:idprefix:
+
+# Workflow
+
+image:https://img.shields.io/gem/v/workflow.svg[link=https://rubygems.org/gems/workflow]
+image:https://github.com/geekq/workflow/actions/workflows/test.yml/badge.svg[link=https://github.com/geekq/workflow/actions/workflows/test.yml]
+image:https://codeclimate.com/github/geekq/workflow/badges/gpa.svg[link=https://codeclimate.com/github/geekq/workflow]
+image:https://codeclimate.com/github/geekq/workflow/badges/coverage.svg[link=https://codeclimate.com/github/geekq/workflow/coverage]
+
+Note: you can find documentation for specific workflow rubygem versions
+at http://rubygems.org/gems/workflow : select a version (optional,
+default is latest release), click "Documentation" link. When reading on
+github.com, the README refers to the upcoming release.
+
+toc::[]
+
+What is workflow?
+-----------------
+
+Workflow is a finite-state-machine-inspired API for modeling and
+interacting with what we tend to refer to as 'workflow'.
+
+A lot of business modeling tends to involve workflow-like concepts, and
+the aim of this library is to make the expression of these concepts as
+clear as possible, using similar terminology as found in state machine
+theory.
+
+So, a workflow has a state. It can only be in one state at a time. When
+a workflow changes state, we call that a transition. Transitions occur
+on an event, so events cause transitions to occur. Additionally, when an
+event fires, other arbitrary code can be executed, we call those actions.
+So any given state has a bunch of events, any event in a state causes a
+transition to another state and potentially causes code to be executed
+(an action). We can hook into states when they are entered, and exited
+from, and we can cause transitions to fail (guards), and we can hook in
+to every transition that occurs ever for whatever reason we can come up
+with.
+
+Now, all that's a mouthful, but we'll demonstrate the API bit by bit
+with a real-ish world example.
+
+Let's say we're modeling article submission from journalists. An article
+is written, then submitted. When it's submitted, it's awaiting review.
+Someone reviews the article, and then either accepts or rejects it.
+Here is the expression of this workflow using the API:
+
+```rb
+class Article
+  include Workflow
+  workflow do
+    state :new do
+      event :submit, :transitions_to => :awaiting_review
+    end
+    state :awaiting_review do
+      event :review, :transitions_to => :being_reviewed
+    end
+    state :being_reviewed do
+      event :accept, :transitions_to => :accepted
+      event :reject, :transitions_to => :rejected
+    end
+    state :accepted
+    state :rejected
+  end
+end
+```
+
+Nice, isn't it!
+
+Note: the first state in the definition (`:new` in the example, but you
+can name it as you wish) is used as the initial state - newly created
+objects start their life cycle in that state.
+
+Let's create an article instance and check in which state it is:
+
+```rb
+article = Article.new
+article.accepted? # => false
+article.new? # => true
+```
+
+You can also access the whole `current_state` object including the list
+of possible events and other meta information:
+
+    article.current_state
+    => #<Workflow::State:0x7f1e3d6731f0 @events={
+      :submit=>#<Workflow::Event:0x7f1e3d6730d8 @action=nil,
+        @transitions_to=:awaiting_review, @name=:submit, @meta={}>},
+      name:new, meta{}
+
+You can also check, whether a state comes before or after another state (by the
+order they were defined):
+
+```rb
+article.current_state # => being_reviewed
+article.current_state < :accepted # => true
+article.current_state >= :accepted # => false
+article.current_state.between? :awaiting_review, :rejected # => true
+```
+
+Now we can call the submit event, which transitions to the
+`:awaiting_review` state:
+
+```rb
+article.submit!
+article.awaiting_review? # => true
+```
+
+Events are actually instance methods on a workflow, and depending on the
+state you're in, you'll have a different set of events used to
+transition to other states.
+
+It is also easy to check, if a certain transition is possible from the
+current state . `article.can_submit?` checks if there is a `:submit`
+event (transition) defined for the current state.
+
+
+Getting started
+---------------
+
+=== Installation
+
+```sh
+gem install workflow
+```
+
+**Important**: If you're interested in graphing your workflow state machine, you will also need to
+install the `activesupport` and `ruby-graphviz` gems.
+
+Versions up to and including 1.0.0 are also available as a single file download -
+link:https://github.com/geekq/workflow/blob/v1.0.0/lib/workflow.rb[lib/workflow.rb file].
+
+
+=== Examples
+
+After installation or downloading the library you can easily try out
+all the example code from this README in irb.
+
+    $ irb
+    require 'rubygems'
+    require 'workflow'
+
+Now just copy and paste the source code from the beginning of this README
+file snippet by snippet and observe the output.
+
+
+### Transition event handler
+
+The best way is to use convention over configuration and to define a
+method with the same name as the event. Then it is automatically invoked
+when event is raised. For the Article workflow defined earlier it would
+be:
+
+```rb
+class Article
+  def reject
+    puts 'sending email to the author explaining the reason...'
+  end
+end
+```
+
+`article.review!; article.reject!` will cause state transition to
+`being_reviewed` state, persist the new state (if integrated with
+ActiveRecord), invoke this user defined `reject` method and finally
+persist the `rejected` state.
+
+Note: on successful transition from one state to another the workflow
+gem immediately persists the new workflow state with `update_column()`,
+bypassing any ActiveRecord callbacks including `updated_at` update.
+This way it is possible to deal with the validation and to save the
+pending changes to a record at some later point instead of the moment
+when transition occurs.
+
+You can also define event handler accepting/requiring additional
+arguments:
+
+```rb
+class Article
+  def review(reviewer = '')
+    puts "[#{reviewer}] is now reviewing the article"
+  end
+end
+
+article2 = Article.new
+article2.submit!
+article2.review!('Homer Simpson') # => [Homer Simpson] is now reviewing the article
+```
+
+Alternative way is to use a block (only recommended for short event
+implementation without further code nesting):
+
+```rb
+event :review, :transitions_to => :being_reviewed do |reviewer|
+  # store the reviewer
+end
+```
+
+We've noticed, that mixing the list of events and states with the blocks
+invoked for particular transitions leads to a bumpy and poorly readable code
+due to a deep nesting. We tried (and dismissed) lambdas for this. Eventually
+we decided to invoke an optional user defined callback method with the same
+name as the event (convention over configuration) as explained before.
+
+State persistence
+-----------------
+
+=== ActiveRecord
+
+Note: Workflow 2.0 is a major refactoring for the `worklow` library.
+If your application suddenly breaks after the workflow 2.0 release, you've
+probably got your Gemfile wrong ;-). workflow uses
+https://guides.rubygems.org/patterns/#semantic-versioning[semantic versioning].
+For highest compatibility please reference the desired major+minor version.
+
+Note on ActiveRecord/Rails 4.\*, 5.\* Support:
+
+Since integration with ActiveRecord makes over 90% of the issues and
+maintenance effort, and also to allow for an independent (faster) release cycle
+for Rails support, starting with workflow **version 2.0** in January 2019 the
+support for ActiveRecord (4.\*, 5.\* and newer) has been extracted into a separate
+gem. Read at
+https://github.com/geekq/workflow-activerecord[workflow-activerecord], how to
+include the right gem.
+
+To use legacy built-in ActiveRecord 2.3 - 4.* support, reference Workflow 1.2 in
+your Gemfile:
+
+    gem 'workflow', '~> 1.2'
+
+
+=== Custom workflow state persistence
+
+If you do not use a relational database and ActiveRecord, you can still
+integrate the workflow very easily. To implement persistence you just
+need to override `load_workflow_state` and
+`persist_workflow_state(new_value)` methods. Next section contains an example for
+using CouchDB, a document oriented database.
+
+http://tim.lossen.de/[Tim Lossen] implemented support
+for http://github.com/tlossen/remodel[remodel] / http://github.com/antirez/redis[redis]
+key-value store.
+
+=== Integration with CouchDB
+
+We are using the compact http://github.com/geekq/couchtiny[couchtiny library]
+here. But the implementation would look similar for the popular
+couchrest library.
+
+```rb
+require 'couchtiny'
+require 'couchtiny/document'
+require 'workflow'
+
+class User < CouchTiny::Document
+  include Workflow
+  workflow do
+    state :submitted do
+      event :activate_via_link, :transitions_to => :proved_email
+    end
+    state :proved_email
+  end
+
+  def load_workflow_state
+    self[:workflow_state]
+  end
+
+  def persist_workflow_state(new_value)
+    self[:workflow_state] = new_value
+    save!
+  end
+end
+```
+
+Please also have a look at
+http://github.com/geekq/workflow/blob/develop/test/couchtiny_example.rb[the full source code].
+
+
+=== Adapters to support other databases
+
+I get a lot of requests to integrate persistence support for different
+databases, object-relational adapters, column stores, document
+databases.
+
+To enable highest possible quality, avoid too many dependencies and to
+avoid unneeded maintenance burden on the `workflow` core it is best to
+implement such support as a separate gem.
+
+Only support for the ActiveRecord will remain for the foreseeable
+future. So Rails beginners can expect `workflow` to work with Rails out
+of the box. Other already included adapters stay for a while but should
+be extracted to separate gems.
+
+If you want to implement support for your favorite ORM mapper or your
+favorite NoSQL database, you just need to implement a module which
+overrides the persistence methods `load_workflow_state` and
+`persist_workflow_state`. Example:
+
+```rb
+module Workflow
+  module SuperCoolDb
+    module InstanceMethods
+      def load_workflow_state
+        # Load and return the workflow_state from some storage.
+        # You can use self.class.workflow_column configuration.
+      end
+
+      def persist_workflow_state(new_value)
+        # save the new_value workflow state
+      end
+    end
+
+    module ClassMethods
+      # class methods of your adapter go here
+    end
+
+    def self.included(klass)
+      klass.send :include, InstanceMethods
+      klass.extend ClassMethods
+    end
+  end
+end
+```
+
+The user of the adapter can use it then as:
+
+```rb
+class Article
+  include Workflow
+  include Workflow:SuperCoolDb
+  workflow do
+    state :submitted
+    # ...
+  end
+end
+```
+
+I can then link to your implementation from this README. Please let me
+also know, if you need any interface beyond `load_workflow_state` and
+`persist_workflow_state` methods to implement an adapter for your
+favorite database.
+
+Advanced usage
+--------------
+
+### Conditional event transitions
+
+Conditions can be a "method name symbol" with a corresponding instance method, a `proc` or `lambda` which are added to events, like so:
+
+```rb
+state :off
+  event :turn_on, :transition_to => :on,
+                  :if => :sufficient_battery_level?
+
+  event :turn_on, :transition_to => :low_battery,
+                  :if => proc { |device| device.battery_level > 0 }
+end
+
+# corresponding instance method
+def sufficient_battery_level?
+  battery_level > 10
+end
+```
+
+When calling a `device.can_<fire_event>?` check, or attempting a `device.<event>!`, each event is checked in turn:
+
+* With no `:if` check, proceed as usual.
+* If an `:if` check is present, proceed if it evaluates to true, or drop to the next event.
+* If you've run out of events to check (eg. `battery_level == 0`), then the transition isn't possible.
+
+You can also pass additional arguments, which can be evaluated by :if methods or procs. See examples in
+link:test/conditionals_test.rb#L45[conditionals_test.rb]
+
+### Advanced transition hooks
+
+#### on_entry/on_exit
+
+We already had a look at the declaring callbacks for particular workflow
+events. If you would like to react to all transitions to/from the same state
+in the same way you can use the on_entry/on_exit hooks. You can either define it
+with a block inside the workflow definition or through naming
+convention, e.g. for the state :pending just define the method
+`on_pending_exit(new_state, event, *args)` somewhere in your class.
+
+#### on_transition
+
+If you want to be informed about everything happening everywhere, e.g. for
+logging then you can use the universal `on_transition` hook:
+
+```rb
+workflow do
+  state :one do
+    event :increment, :transitions_to => :two
+  end
+  state :two
+  on_transition do |from, to, triggering_event, *event_args|
+    Log.info "#{from} -> #{to}"
+  end
+end
+```
+
+#### on_error
+
+If you want to do custom exception handling internal to workflow, you can define an `on_error` hook in your workflow.
+For example:
+
+```rb
+workflow do
+  state :first do
+    event :forward, :transitions_to => :second
+  end
+  state :second
+
+  on_error do |error, from, to, event, *args|
+    Log.info "Exception(#{error.class}) on #{from} -> #{to}"
+  end
+end
+```
+
+If forward! results in an exception, `on_error` is invoked and the workflow stays in a 'first' state.  This capability
+is particularly useful if your errors are transient and you want to queue up a job to retry in the future without
+affecting the existing workflow state.
+
+### Guards
+
+If you want to halt the transition conditionally, you can just raise an
+exception in your [transition event handler](#transition_event_handler).
+There is a helper called `halt!`, which raises the
+Workflow::TransitionHalted exception. You can provide an additional
+`halted_because` parameter.
+
+```rb
+def reject(reason)
+  halt! 'We do not reject articles unless the reason is important' \
+    unless reason =~ /important/i
+end
+```
+
+The traditional `halt` (without the exclamation mark) is still supported
+too. This just prevents the state change without raising an
+exception.
+
+You can check `halted?` and `halted_because` values later.
+
+### Hook order
+
+The whole event sequence is as follows:
+
+    * before_transition
+    * event specific action
+    * on_transition (if action did not halt)
+    * on_exit
+    * PERSIST WORKFLOW STATE (i.e. transition) or on_error
+    * on_entry
+    * after_transition
+
+
+### Accessing your workflow specification
+
+You can easily reflect on workflow specification programmatically - for
+the whole class or for the current object. Examples:
+
+```rb
+article2.current_state.events # lists possible events from here
+article2.current_state.events[:reject].transitions_to # => :rejected
+
+Article.workflow_spec.states.keys
+#=> [:rejected, :awaiting_review, :being_reviewed, :accepted, :new]
+
+Article.workflow_spec.state_names
+#=> [:rejected, :awaiting_review, :being_reviewed, :accepted, :new]
+
+# list all events for all states
+Article.workflow_spec.states.values.collect &:events
+```
+
+You can also store and later retrieve additional meta data for every
+state and every event:
+
+```rb
+class MyProcess
+  include Workflow
+  workflow do
+    state :main, :meta => {:importance => 8}
+    state :supplemental, :meta => {:importance => 1}
+  end
+end
+puts MyProcess.workflow_spec.states[:supplemental].meta[:importance] # => 1
+```
+
+The workflow library itself uses this feature to tweak the graphical
+representation of the workflow. See below.
+
+
+### Defining workflow dynamically from JSON
+
+For an advance example please see
+link:https://github.com/geekq/workflow/blob/develop/test/workflow_from_json_test.rb[workflow_from_json_test.rb].
+
+
+### Compose workflow definition with `include`
+
+In case you have very extensive workflow definition or would like to reuse
+workflow definition for different classes, you can include parts like in
+the link:https://github.com/geekq/workflow/blob/develop/test/main_test.rb#L95-L110[`including a child workflow definition` example].
+
+Documenting with diagrams
+-------------------------
+
+You can generate a graphical representation of the workflow for
+a particular class for documentation purposes.
+Use `Workflow::create_workflow_diagram(class)` in your rake task like:
+
+```rb
+namespace :doc do
+  desc "Generate a workflow graph for a model passed e.g. as 'MODEL=Order'."
+  task :workflow => :environment do
+    require 'workflow/draw'
+    Workflow::Draw::workflow_diagram(ENV['MODEL'].constantize)
+  end
+end
+```
+
+
+Changelog
+---------
+
+=== New in the version 3.1.0
+
+* link:https://github.com/geekq/workflow/pull/227[#227] Allow event arguments to be taken into account when selecting the event
+* link:https://github.com/geekq/workflow/pull/232[#232] Add ability to include partial workflow definitions for composability
+* link:https://github.com/geekq/workflow/pull/241[#241] Example for defining workflow dynamically from JSON
+
+=== New in the version 3.0.0
+
+* link:https://github.com/geekq/workflow/pull/228[#228] Support for Ruby 3 keyword args, provided by @agirling
+* retire Ruby 2.6 since it has reached end of live; please use workflow 2.x, if you still depend on that Ruby version
+* link:https://github.com/geekq/workflow/pull/229[#229] Switch from travis CI to GihHub actions for continuous integration
+
+### New in the versions 2.x
+
+* extract persistence adapters, Rails/ActiveRecord integration is now a separate gem
+  workflow-activerecord
+
+Support, Participation
+----------------------
+
+### Reporting bugs
+
+<http://github.com/geekq/workflow/issues>
+
+### Development Setup
+
+```sh
+sudo apt-get install graphviz # Linux
+brew install graphviz # Mac OS
+cd workflow
+gem install bundler
+bundle install
+# run all the tests
+bundle exec rake test
+```
+
+### Check list for you pull request
+
+* [ ] unit tests for the new behavior provided: new tests fail without you change, all tests succeed with your change
+* [ ] documentation update included
+
+### Other 3rd party libraries
+
+https://github.com/kwent/active_admin-workflow[ActiveAdmin-Workflow] - is an
+integration with https://github.com/activeadmin/activeadmin[ActiveAdmin].
+
+### About
+
+Author: Vladimir Dobriakov, <https://infrastructure-as-code.de>
+
+Copyright (c) 2010-2024 Vladimir Dobriakov and Contributors
+
+Copyright (c) 2008-2009 Vodafone
+
+Copyright (c) 2007-2008 Ryan Allen, FlashDen Pty Ltd
+
+Based on the work of Ryan Allen and Scott Barron
+
+Licensed under MIT license, see the MIT-LICENSE file.

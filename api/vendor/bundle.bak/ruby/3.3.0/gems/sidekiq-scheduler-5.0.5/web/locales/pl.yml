@@ -1,0 +1,15 @@
+pl:
+  "Recurring Jobs": Okresowe
+  recurring_jobs: Okresowe
+  name: Nazwa
+  description: Opis
+  interval: Interwał
+  class: Klasa
+  queue: Kolejka
+  arguments: Argumenty
+  enqueue_now: Zakolejkuj teraz
+  last_time: Ostatnie wystąpienie
+  next_time: Następne wystąpienie
+  no_next_time: to zadanie nie zostanie już wywołane
+  disable: Wyłącz
+  enable: Włącz

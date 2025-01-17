@@ -314,7 +314,7 @@ Foo bar baz
 
   it('strips unsupported link attribute values', () => {
     const md =
-      'This is <a href="https://campsite.com" rel="noopener noreferrer expect author preload" target="_parent" class="prose-link py-10 bg-red-500">link</a>.'
+      'This is <a href="https://campsite.theprimejnr.com" rel="noopener noreferrer expect author preload" target="_parent" class="prose-link py-10 bg-red-500">link</a>.'
 
     const extensions = getMarkdownExtensions()
     const schema = getSchemaByResolvedExtensions(extensions)

@@ -84,6 +84,10 @@ Rails.application.configure do
   config.hosts << "auth.campsite.test"
   config.hosts << "api.campsite.test"
   config.hosts << "campsite.test"
+  config.hosts << "auth.campsite.theprimejnr.com"
+  config.hosts << "api.campsite.theprimejnr.com"
+  config.hosts << "app.campsite.theprimejnr.com"
+  config.hosts << "campsite.theprimejnr.com"
   config.hosts << /.+\.campsite\.design/
   config.hosts << /.+\.campsite\.co/
   config.hosts << /.+\.campsite\.com/
