@@ -1337,7 +1337,7 @@ exports[`createMarkdownParser > strips unsupported link attribute values 1`] = `
             {
               "attrs": {
                 "class": "prose-link",
-                "href": "https://campsite.theprimejnr.com",
+                "href": "https://campsite.com",
                 "rel": "noopener noreferrer nofollow",
                 "target": "_blank",
                 "truncated": false,
