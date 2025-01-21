@@ -1,4 +1,4 @@
-## Getting Started
+## Campsite web
 
 First, run the development server:
 
