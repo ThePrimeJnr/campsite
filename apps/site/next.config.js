@@ -162,8 +162,8 @@ const sentryWebpackPluginOptions = {
   // For all available options, see:
   // https://github.com/getsentry/sentry-webpack-plugin#options.
   authToken: process.env.SENTRY_AUTH_TOKEN,
-  project: 'campsite',
-  org: 'theprimejnr',
+  project: process.env.SENTRY_PROJECT,
+  org: process.env.SENTRY_ORG,
   widenClientFileUpload: true,
   hideSourceMaps: true,
   debug: false,
