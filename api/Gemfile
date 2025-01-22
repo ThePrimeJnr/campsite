@@ -30,11 +30,13 @@ gem "ip_anonymizer"
 gem "jsbundling-rails"
 gem "json-schema"
 gem "jwt"
+gem 'mysql2'
 gem "nanoid"
 gem "omniauth"
 gem "omniauth-google-oauth2"
 gem "omniauth-rails_csrf_protection"
 gem "openapi3_parser"
+gem "planetscale_rails"
 gem "postmark-rails"
 gem "premailer-rails"
 gem "prosopite"
@@ -100,3 +102,7 @@ group :test do
   gem "vcr"
   gem "webmock"
 end
+
+gem "dockerfile-rails", ">= 1.7", :group => :development
+
+gem "pg", "~> 1.5"

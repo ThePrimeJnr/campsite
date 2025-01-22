@@ -116,6 +116,7 @@ Rails.application.configure do
   config.hosts << "admin.trustle.one"
   config.hosts << "auth.trustle.one"
   config.hosts << "api.trustle.one"
+
   config.hosts << "campsite-api.fly.dev"
 
   # required to access the app via Fly private network

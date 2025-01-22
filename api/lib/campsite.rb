@@ -2,7 +2,7 @@
 
 module Campsite
   DEV_APP_URL = URI.parse(ENV.fetch("DEV_APP_URL", "http://app.campsite.test:3000"))
-  PROD_DOT_COM_APP_URL = URI.parse("https://app.campsite.com")
+  PROD_DOT_COM_APP_URL = URI.parse("https://campsite.dessn.ai")
 
   DEV_DESKTOP_APP_PROTOCOL = "campsite-dev://"
   PROD_DESKTOP_APP_PROTOCOL = "campsite://"
