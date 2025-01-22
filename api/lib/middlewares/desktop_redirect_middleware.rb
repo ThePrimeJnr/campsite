@@ -32,7 +32,7 @@ module Middlewares
 
     def redirect?(request)
       desktop_redirectable = request.get? &&
-        request.host.starts_with?("auth") &&
+        request.host.starts_with?("auth-campsite") &&
         [auth_root_path, new_user_session_path, new_user_registration_path].include?(request.path)
 
       # redirect /sign-in or /sign-up requests from the desktop app to /sign-in/desktop

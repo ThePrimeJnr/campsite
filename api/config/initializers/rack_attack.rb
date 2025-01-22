@@ -58,7 +58,7 @@ end
 
 # Throttle sign up attempts for an ip to 6 reqs/minute
 Rack::Attack.throttle("limit sign ups per email", limit: 6, period: 60) do |req|
-  if req.path == "/" && req.host&.split(".")&.first == "auth" && req.post?
+  if req.path == "/" && req.host&.split(".")&.first == "auth-campsite" && req.post?
     "ip:#{req.env["HTTP_FLY_CLIENT_IP"]}"
   end
 end

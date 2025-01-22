@@ -10,7 +10,7 @@ Rails.application.routes.draw do
     mount LetterOpenerWeb::Engine, at: "/preview-emails"
   end
 
-  constraints subdomain: ENV.fetch("AUTH_SUBDOMAIN", "auth") do
+  constraints subdomain: ENV.fetch("AUTH_SUBDOMAIN", "auth-campsite") do
     devise_for :users,
       controllers: {
         omniauth_callbacks: "users/omniauth_callbacks",

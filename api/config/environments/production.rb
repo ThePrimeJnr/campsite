@@ -114,10 +114,16 @@ Rails.application.configure do
   config.hosts << "api.campsite.com"
 
   config.hosts << "admin.trustle.one"
-  config.hosts << "auth.trustle.one"
-  config.hosts << "api.trustle.one"
+  config.hosts << "auth-campsite.dessn.ai"
+  config.hosts << "api-campsite.dessn.ai"
   config.hosts << "campsite-api.fly.dev"
 
   # required to access the app via Fly private network
   config.hosts << "campsite-api.internal"
+
+  config.assets.compile = false
+  config.assets.digest = true
+  config.public_file_server.enabled = true
+  config.action_controller.default_url_options = { protocol: 'https' }
+  config.force_ssl = true
 end
