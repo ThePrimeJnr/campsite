@@ -16,7 +16,7 @@ class MyDocument extends Document {
       <Html lang='en' className='fixed isolate h-full w-full overflow-hidden'>
         <Head>
           <meta name='slack-app-id' content='A03CG5AP4CE' />
-          <link rel='preconnect' href='https://api.campsite.com' />
+          <link rel='preconnect' href='https://api-campsite.dessn.ai' />
           <link rel='preconnect' href='https://campsite.imgix.net' />
           <link rel='preconnect' href='https://o1244295.ingest.sentry.io' />
         </Head>

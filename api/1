@@ -111,7 +111,7 @@ Rails.application.configure do
 
   config.hosts << "admin.campsite.com"
   config.hosts << "auth.campsite.com"
-  config.hosts << "api.campsite.com"
+  config.hosts << "api-campsite.dessn.ai"
 
   config.hosts << "admin.trustle.one"
   config.hosts << "auth.trustle.one"

@@ -85,7 +85,7 @@ Rails.application.configure do
   config.hosts << "api.campsite.test"
   config.hosts << "campsite.test"
   config.hosts << "auth.campsite.com"
-  config.hosts << "api.campsite.com"
+  config.hosts << "api-campsite.dessn.ai"
   config.hosts << "app.campsite.com"
   config.hosts << "campsite.com"
   config.hosts << /.+\.campsite\.design/

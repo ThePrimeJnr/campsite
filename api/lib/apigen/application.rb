@@ -414,7 +414,7 @@ module Apigen
         },
         servers: [
           {
-            url: "https://api.campsite.com",
+            url: "https://api-campsite.dessn.ai",
           },
         ],
         paths: swagger_paths,
