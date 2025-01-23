@@ -37,6 +37,8 @@ const cspResourcesByDirective = {
     'wss://*.campsite.design',
     'https://*.campsite.co',
     'wss://*.campsite.co',
+    'https://*.dessn.ai',
+    'wss://*.dessn.ai',
     'https://*.campsite.com',
     'wss://*.campsite.com',
     process.env.NODE_ENV !== 'production' && 'http://api.campsite.test:3001',
@@ -123,7 +125,7 @@ const moduleExports = {
     domains: [
       'app.campsite.design',
       'app.campsite.co',
-      'app.campsite.com',
+      'campsite.dessn.ai',
       'campsite.dessn.ai',
       'app.campsite.test',
       'avatars.slack-edge.com',

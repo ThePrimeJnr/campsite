@@ -209,8 +209,8 @@ export function PWAInstallGuideDialog({ open, setOpen }: Props) {
   const resolvedCreateBookmark = isDark ? imageSet.createBookmark.dark : imageSet.createBookmark.light
   const resolvedAddToHomeScreen = isDark ? imageSet.addToHomeScreen.dark : imageSet.addToHomeScreen.light
   const description = platformIOS
-    ? 'From the Safari app, navigate to app.campsite.com, tap the share button and select “Add to Home Screen”.'
-    : 'From the Chrome app, navigate to app.campsite.com, tap the ••• menu button and select “Add to Home Screen”.'
+    ? 'From the Safari app, navigate to campsite.dessn.ai, tap the share button and select “Add to Home Screen”.'
+    : 'From the Chrome app, navigate to campsite.dessn.ai, tap the ••• menu button and select “Add to Home Screen”.'
 
   return (
     <D.Root open={open} onOpenChange={setOpen} size='xl'>
@@ -220,7 +220,7 @@ export function PWAInstallGuideDialog({ open, setOpen }: Props) {
         <D.Description>
           If you run into issues, read the full{' '}
           <Link
-            href='https://app.campsite.com/campsite/p/notes/install-the-campsite-mobile-app-9g4aof0csg18'
+            href='https://campsite.dessn.ai/campsite/p/notes/install-the-campsite-mobile-app-9g4aof0csg18'
             target='_blank'
             className='text-blue-500 hover:underline'
           >

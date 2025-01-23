@@ -1,6 +1,6 @@
 # README
 
-This is the API that powers https://app.campsite.com
+This is the API that powers https://campsite.dessn.ai
 
 ## Dev Environment
 

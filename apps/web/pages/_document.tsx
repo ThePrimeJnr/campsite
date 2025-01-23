@@ -43,7 +43,7 @@ class MyDocument extends Document {
           */}
           <div id='quick-thread' />
           {/* 
-            Read this post for more context: https://app.campsite.com/campsite/posts/8vmro5yao61v
+            Read this post for more context: https://campsite.dessn.ai/campsite/posts/8vmro5yao61v
             PR: https://github.com/campsite/campsite/pull/5182
 
             tl;dr — when you're on a call, you might open a post's attachment lightbox. In this case,

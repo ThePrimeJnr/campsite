@@ -86,7 +86,7 @@ const config = {
       },
       {
         source: '/community',
-        destination: 'https://app.campsite.com/design/join',
+        destination: 'https://campsite.dessn.ai/design/join',
         permanent: false
       },
       {

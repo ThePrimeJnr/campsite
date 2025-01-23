@@ -41,7 +41,7 @@ module Users
         assert_nil flash[:alert]
       end
 
-      test "redirects to app.campsite.com if user is on campsite.com" do
+      test "redirects to campsite.dessn.ai if user is on campsite.com" do
         host! "auth.campsite.com"
         user = create(:user, password: "mypasswordisverystrong!", password_confirmation: "mypasswordisverystrong!")
 

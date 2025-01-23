@@ -2152,12 +2152,12 @@ class PostTest < ActiveSupport::TestCase
       other_org_call = create(:call)
 
       body = <<~HTML.strip
-        <resource-mention href="https://app.campsite.com/campsite/posts/#{same_org_post.public_id}"></resource-mention>
-        <resource-mention href="https://app.campsite.com/campsite/posts/#{other_org_post.public_id}"></resource-mention>
-        <resource-mention href="https://app.campsite.com/campsite/notes/#{same_org_note.public_id}"></resource-mention>
-        <resource-mention href="https://app.campsite.com/campsite/notes/#{other_org_note.public_id}"></resource-mention>
-        <resource-mention href="https://app.campsite.com/campsite/calls/#{same_org_call.public_id}"></resource-mention>
-        <resource-mention href="https://app.campsite.com/campsite/calls/#{other_org_call.public_id}"></resource-mention>
+        <resource-mention href="https://campsite.dessn.ai/campsite/posts/#{same_org_post.public_id}"></resource-mention>
+        <resource-mention href="https://campsite.dessn.ai/campsite/posts/#{other_org_post.public_id}"></resource-mention>
+        <resource-mention href="https://campsite.dessn.ai/campsite/notes/#{same_org_note.public_id}"></resource-mention>
+        <resource-mention href="https://campsite.dessn.ai/campsite/notes/#{other_org_note.public_id}"></resource-mention>
+        <resource-mention href="https://campsite.dessn.ai/campsite/calls/#{same_org_call.public_id}"></resource-mention>
+        <resource-mention href="https://campsite.dessn.ai/campsite/calls/#{other_org_call.public_id}"></resource-mention>
       HTML
 
       post = create(:post, description_html: body, organization: organization)
@@ -2187,7 +2187,7 @@ class PostTest < ActiveSupport::TestCase
       organization = same_org_post.organization
 
       body = <<~HTML.strip
-        <resource-mention href="https://app.campsite.com/campsite/posts/#{same_org_post.public_id}"></resource-mention>
+        <resource-mention href="https://campsite.dessn.ai/campsite/posts/#{same_org_post.public_id}"></resource-mention>
       HTML
 
       post = create(:post, description_html: body, organization: organization)

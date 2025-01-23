@@ -1047,9 +1047,9 @@ module Api
           create(:call_peer, call: mentioned_call, organization_membership: @member)
 
           html = <<~HTML.strip
-            <resource-mention href="https://app.campsite.com/campsite/posts/#{mentioned_post.public_id}"></resource-mention>
-            <resource-mention href="https://app.campsite.com/campsite/notes/#{mentioned_note.public_id}"></resource-mention>
-            <resource-mention href="https://app.campsite.com/campsite/calls/#{mentioned_call.public_id}"></resource-mention>
+            <resource-mention href="https://campsite.dessn.ai/campsite/posts/#{mentioned_post.public_id}"></resource-mention>
+            <resource-mention href="https://campsite.dessn.ai/campsite/notes/#{mentioned_note.public_id}"></resource-mention>
+            <resource-mention href="https://campsite.dessn.ai/campsite/calls/#{mentioned_call.public_id}"></resource-mention>
           HTML
 
           @post.update!(description_html: html)

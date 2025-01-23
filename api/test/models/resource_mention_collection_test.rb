@@ -9,9 +9,9 @@ class ResourceMentionCollectionTest < ActiveSupport::TestCase
       mentioned_calls = create_list(:call, 3)
       mentioned_notes = create_list(:note, 2)
 
-      mentioned_post_html = mentioned_posts.map { |post| "<resource-mention href=\"https://app.campsite.com/campsite/posts/#{post.public_id}\"></resource-mention>" }.join
-      mentioned_call_html = mentioned_calls.map { |call| "<resource-mention href=\"https://app.campsite.com/campsite/calls/#{call.public_id}\"></resource-mention>" }.join
-      mentioned_note_html = mentioned_notes.map { |note| "<resource-mention href=\"https://app.campsite.com/campsite/notes/#{note.public_id}\"></resource-mention>" }.join
+      mentioned_post_html = mentioned_posts.map { |post| "<resource-mention href=\"https://campsite.dessn.ai/campsite/posts/#{post.public_id}\"></resource-mention>" }.join
+      mentioned_call_html = mentioned_calls.map { |call| "<resource-mention href=\"https://campsite.dessn.ai/campsite/calls/#{call.public_id}\"></resource-mention>" }.join
+      mentioned_note_html = mentioned_notes.map { |note| "<resource-mention href=\"https://campsite.dessn.ai/campsite/notes/#{note.public_id}\"></resource-mention>" }.join
 
       body = <<~HTML.strip
         #{mentioned_post_html}

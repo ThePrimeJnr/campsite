@@ -8,7 +8,7 @@ module Backfills
       it "dry run is a no-op" do
         html = <<~HTML.strip
           <a href="https://app.campsite.co/foo-bar/123">Link 1</a>
-          <a href="https://app.campsite.com/cat/abc">Link 2</a>
+          <a href="https://campsite.dessn.ai/cat/abc">Link 2</a>
           <a href="https://google.com/noop">Link 3</a>
         HTML
 
@@ -24,7 +24,7 @@ module Backfills
       it "updates links" do
         html = <<~HTML.strip
           <a href="https://app.campsite.co/foo-bar/123">Link 1</a>
-          <a href="https://app.campsite.com/cat/abc">Link 2</a>
+          <a href="https://campsite.dessn.ai/cat/abc">Link 2</a>
           <a href="https://google.com/noop">Link 3</a>
         HTML
 

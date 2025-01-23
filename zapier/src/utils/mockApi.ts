@@ -34,7 +34,7 @@ export const mockCreatePostResponse: PostIntegrationsZapierPostsData = {
   content: "<p>Who's in for Hiking Club this Saturday? Weather is looking beautiful! Meet at the park at 8am?</p>",
   created_at: '2024-04-01T000:00:00Z',
   published_at: '2024-04-01T000:00:00Z',
-  url: 'https://app.campsite.com/frontier-forest/posts/1'
+  url: 'https://campsite.dessn.ai/frontier-forest/posts/1'
 }
 
 export const mockProjectsResponse: GetIntegrationsZapierProjectsData = {
