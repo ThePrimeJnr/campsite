@@ -3,7 +3,7 @@
 module Backfills
   class UpdateCoToComLinksBackfill
     OLD_DOMAIN = "https://app.campsite.co/"
-    NEW_DOMAIN = "https://app.campsite.com/"
+    NEW_DOMAIN = "https://campsite.dessn.ai/"
 
     def self.run(dry_run: true)
       updated_posts_count = 0

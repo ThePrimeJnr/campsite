@@ -1,19 +1,35 @@
-# fly.toml app configuration file generated for campsite-elasticsearch on 2023-05-30T17:14:20-04:00
+# fly.toml app configuration file generated for campsite-elasticsearch-dessn on 2025-01-23T03:01:55Z
 #
 # See https://fly.io/docs/reference/configuration/ for information about how to use this file.
 #
 
-app = "campsite-elasticsearch"
-primary_region = "iad"
-kill_timeout = 60
+app = 'campsite-elasticsearch-dessn'
+primary_region = 'iad'
+kill_timeout = '1m0s'
 
-[mounts]
-  source = "es_data"
-  destination = "/usr/share/elasticsearch/data"
+[build]
 
-[[services]]
+[[mounts]]
+  source = 'es_data'
+  destination = '/usr/share/elasticsearch/data'
+
+[http_service]
   internal_port = 9200
   force_https = true
-  auto_stop_machines = true
+  auto_stop_machines = 'off'
+  auto_start_machines = true
+  min_machines_running = 0
+  processes = ['app']
+
+[[services]]
+  protocol = ''
+  internal_port = 9200
+  auto_stop_machines = 'off'
   auto_start_machines = true
   min_machines_running = 1
+  ports = []
+
+[[vm]]
+  memory = '1gb'
+  cpu_kind = 'shared'
+  cpus = 1

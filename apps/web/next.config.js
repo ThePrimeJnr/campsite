@@ -124,6 +124,7 @@ const moduleExports = {
       'app.campsite.design',
       'app.campsite.co',
       'app.campsite.com',
+      'campsite.dessn.ai',
       'app.campsite.test',
       'avatars.slack-edge.com',
       'campsite.imgix.net',
